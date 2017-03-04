@@ -33,7 +33,7 @@ function requestDevice(data){
 }
 
 function createList(data){
-  $("#devices").append($("<h1> Device " + deviceNum + ":</h1>"));
+  $("#devices").append($("<h2> Device " + deviceNum + ":</h2>"));
   $("#devices").append($("<tr id = dev" + deviceNum + "></tr>"));
   for (var i in data){
     var formattedData;
