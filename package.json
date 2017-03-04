@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/jaxee/cuhacking-2017.git"
   },
-  "author": "",
+  "dependencies": {
+    "mime-types": "*"
+  },
+  "author": "Jackie Ellis",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jaxee/cuhacking-2017/issues"
