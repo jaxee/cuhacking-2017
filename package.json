@@ -1,0 +1,19 @@
+{
+  "name": "cu-hacking",
+  "version": "1.0.0",
+  "description": "CU Hacking Martello Challenge",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaxee/cuhacking-2017.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaxee/cuhacking-2017/issues"
+  },
+  "homepage": "https://github.com/jaxee/cuhacking-2017#readme"
+}
