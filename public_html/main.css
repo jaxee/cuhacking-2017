@@ -34,6 +34,7 @@ p {
     display: block;
     transition: 0.2s;
 	color:rgb(183, 183, 183);
+	text-align:left;
 }
 
 .sidenav a:hover{
@@ -44,12 +45,13 @@ p {
 #dropdownButtons {
 	overflow-y: auto;
 	height: 100px;
+	overflow-x:hidden;
 }
 
 #dropdownButtons a{
 	font-size:16px;
 	padding:5px;
-	margin-left:100px;
+	margin-left:35px;
 	text-align:left;
 }
 
@@ -176,6 +178,17 @@ td a {
 	margin-bottom:15px;
 }
 
+.settings{
+	position:fixed;
+    bottom:8px;
+    width:4%;
+    padding-left:12%;
+}
+
+.closebtn, .openMenuTab{
+    display:none !important;
+}
+
 /* MOBILE ADJUSTMENTS */
 @media (max-width:700px) {
     .sidenav{
@@ -201,7 +214,11 @@ td a {
         top: 0;
         right: 25px;
         font-size: 150px;
-        opacity:0.5;
         margin-left: 50px;
+    }
+    
+    .closebtn, .openMenuTab{
+        display:block;
+        opacity:0.5;
     }
 }

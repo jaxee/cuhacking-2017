@@ -14,18 +14,16 @@
 	            $( ".dropbtn" ).click(function() {
 	                $( "#dropdownButtons" ).slideToggle( "slow" );
 	            });
+
+	            function openNav() {
+	                document.getElementById("mySidenav").style.width = "60%";
+	            }
+
+	            function closeNav() {
+	                document.getElementById("mySidenav").style.width = "0";
+	            }
 	        });
 	    </script>
-
-	    <script>
-            function openNav() {
-                document.getElementById("mySidenav").style.width = "60%";
-            }
-
-            function closeNav() {
-                document.getElementById("mySidenav").style.width = "0";
-            }
-        </script>
 	</head>
 	<body>
 		<div id="mySidenav" class="sidenav">
@@ -36,10 +34,9 @@
 		  <a href="#" id="summaryBtn" onClick="showSummary()">Summary</a>
 		  <a href="#" id="devicesBtn" class="dropbtn">Devices</a>
 		    <div id="dropdownButtons" style="display:none;"></div>
-		  <a href="#" id="problemsBtn">Problems</a>
-		  <a href="#" id="updatesBtn">Updates</a>
+		  <a href="#" id="problemsBtn" onClick="showProblems()">Problems</a>
 		  <a href="#" id="historyBtn">History</a>
-		  <a href="#" onClick="alert('Not Implemented Yet!')" id="settingsBtn"><img width="25%" src="Images/settingsIcon.png" /></a>
+		  <a href="#" onClick="alert('Not Implemented Yet!')" id="settingsBtn"><img width="25%" class="settings" src="Images/settingsIcon.png" /></a>
 		</div>
 
 		<span style="font-size:30px;cursor:pointer;opacity:0.5;" class="openMenuTab" onclick="openNav()"><img class="menuOpenTabImg" height="200px;" src="Images/menuOpenTab.png" /></span>
@@ -63,6 +60,10 @@
 			</div>
 
 			<div id='device'>
+
+			</div>
+
+			<div id="problems">
 
 			</div>
 

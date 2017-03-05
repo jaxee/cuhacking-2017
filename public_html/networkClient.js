@@ -75,6 +75,7 @@ function showDeviceInfo(num) {
   $("#device").empty();
   $("#summary").hide();
   $("#device").show();
+  $("#problems").hide();
 
   var deviceInfo = "<div id='pageTitle'><h1> Devices </h1></div><h2>"+ deviceList[num].name +"</h2> <h4>"+ deviceList[num].description +"</h4> <img width='20%' class='deviceImage' src='./Images/" + deviceList[num].deviceType +".png' /> <p class='ipAdd'>"+ deviceList[num].interfaces[0].ipAddress +"</p> <table class='deviceInformation'> <tr> <td> " + deviceList[num].interfaces[0].bytesReceived + " </td> <td> " + deviceList[num].interfaces[0].bytesSent  + " </td> <td>" + deviceList[num].interfaces[0].packetsLost +"</td> <td>"+ deviceList[num].interfaces[0].packetLossRate  +"%</td></tr> <tr> <td> Bytes Recieved </td> <td> Bytes Sent </td> <td> Packets Lost </td> <td> Packet Lost Rate </td> </tr></table><table class='deviceInformation'> <tr> <td>"+ deviceList[num].lastSeen +"</td> <td>"+ deviceList[num].interfaces[0].gateway +"</td> <td>" + deviceList[num].interfaces[0].macAddress +"</td></tr> <tr> <td> Last Update </td> <td> Gateway </td> <td> Mac Address </td> </tr></table><div id='devices'></div><p></p>";
   $("#device").append(deviceInfo);
@@ -84,7 +85,43 @@ function showDeviceInfo(num) {
 
 function displayList(data){
   for (var i in data){ //for each (i : data[i]) in data
-    if (i == "name" || i == "description" || i == "ipAddress" || i == "alarms" || i == "deviceNum" || i == "deviceType" || i == "lastSeen" || i == "uptime" || i == "interfaces" || i == "document") continue;
+    if (i == "name" || i == "description" || i == "ipAddress" || i == "alarms" || i == "deviceNum" || i == "deviceType" || i == "lastSeen" || i == "uptime" || i == "interfaces" || i == "document" || i == "dhcpClients") continue;
+
+    switch(data.deviceType) {
+        case "router":
+            console.log("router");
+            break;
+        case "phone":
+            console.log("phone");
+            break;
+        case "television":
+            console.log("TV");
+            break;
+        case "computer":
+            console.log("computer");
+            break;
+        case "toaster":
+            console.log("toaster");
+            break;
+        case "thermostat":
+            console.log("thermostat");
+            break;
+        case "printer":
+            console.log("printer");
+            break;
+        case "console":
+            console.log("console");
+            break;
+        case "smokedetector":
+            console.log("smoke detector");
+            break;
+        case "chromecast":
+            console.log("chromecast");
+            break;
+        default:
+            console.log("generic");
+    }
+
     formattedData = "";
     if (data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
       formattedData += "[<br>&nbsp&nbsp";
@@ -111,4 +148,16 @@ function displayList(data){
 function showSummary(){
   $("#device").hide();
   $("#summary").show();
+  $("#problems").hide();
+}
+
+function showProblems(){
+  $("#problems").empty();
+
+  $("#device").hide();
+  $("#summary").hide();
+  $("#problems").show();
+
+  var problemsInfo = "<div id='pageTitle'><h1> Problems </h1></div>";
+  $("#problems").append(problemsInfo);
 }
