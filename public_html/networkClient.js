@@ -59,6 +59,4 @@ function add(data){
   var cell = "<td><img width='50%' src='./Images/" + data.deviceType +".png' /><div id='deviceInfo'><h4><b>" + data.name + "</b></h4> <p>" + data.description +"</p></div></td>";
   console.log(data.deviceNum);
   $("#allDevices tr:eq("+ parseInt(data.deviceNum/4) +")").append(cell);
-
-  //$("#allDevices").append("<li><div id='deviceIcon'><img width='50%' src='./Images/"+data.deviceType+".png'/></div><div id='deviceInfo'><h4><b>" + data.name + "</b></h4><p>" + data.description +"</p<</div></li>");
 }
