@@ -84,6 +84,7 @@ function showDeviceInfo(num) {
   $("#summary").hide();
   $("#device").show();
   $("#problems").hide();
+  $("#history").hide();
 
   var deviceInfo = "<div id='pageTitle'><h1> Devices </h1></div><h2>"+ deviceList[num].name +"</h2> <h4>"+ deviceList[num].description +"</h4> <img width='20%' class='deviceImage' src='./Images/" + deviceList[num].deviceType +".png' /> <p class='ipAdd'>"+ deviceList[num].interfaces[0].ipAddress +"</p> <table class='deviceInformation'> <tr> <td> " + deviceList[num].interfaces[0].bytesReceived + " </td> <td> " + deviceList[num].interfaces[0].bytesSent  + " </td> <td>" + deviceList[num].interfaces[0].packetsLost +"</td> <td>"+ deviceList[num].interfaces[0].packetLossRate  +"%</td></tr> <tr> <td> Bytes Recieved </td> <td> Bytes Sent </td> <td> Packets Lost </td> <td> Packet Lost Rate </td> </tr></table><table class='deviceInformation'> <tr> <td>"+ deviceList[num].lastSeen +"</td> <td>"+ deviceList[num].interfaces[0].gateway +"</td> <td>" + deviceList[num].interfaces[0].macAddress +"</td></tr> <tr> <td> Last Update </td> <td> Gateway </td> <td> Mac Address </td> </tr></table><hr/><div id='devices'></div><p></p>";
   $("#device").append(deviceInfo);
@@ -115,6 +116,7 @@ function displayList(data){
     }
     var newData = $("<h5 data-item='"+i+"'>" + i + " : " + formattedData + "</h5>");
     $("#devices").append(newData);
+    $("#history").append(newData); //yolo
   }
 }
 
@@ -124,15 +126,44 @@ function showSummary(){
   $("#device").hide();
   $("#summary").show();
   $("#problems").hide();
+  $("#history").hide();
 }
 
 function showProblems(){
   $("#problems").empty();
-
+  $("#history").hide();
   $("#device").hide();
   $("#summary").hide();
   $("#problems").show();
 
   var problemsInfo = "<div id='pageTitle'><h1> Problems </h1></div>";
   $("#problems").append(problemsInfo);
+}
+
+//this function displays the device history
+function showHistory(data){
+  $("#history").empty();
+  $("#device").hide();
+  $("#summary").hide();
+  $("#problems").hide();
+  $("#history").show();
+
+  var historyInfo = "<div><h1> History </h1></div>";
+  $("#history").append(historyInfo);
+  for (var i=0; i<data.length; i++){
+    $("#history").append("<h3>Device List: " + i + " </h3>")
+    for (var j=0; j<data[i].length; j++){
+        displayList(data[i][j]);
+    }
+  }
+}
+
+//this is the click handler for the history button
+function historyHandler(){
+  $.ajax({
+    method:"GET",
+    url:"/history/",
+    success: showHistory,
+    dataType:'json'
+  });
 }

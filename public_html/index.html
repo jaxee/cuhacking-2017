@@ -28,14 +28,14 @@
 	<body>
 		<div id="mySidenav" class="sidenav">
 		  <img style="margin-top:-20px; padding-top:0px; padding-bottom:40px;" width="40%" src="https://i1.wp.com/www.organicweb.com.au/wp-content/uploads/2013/11/HTML5_Logo_256.png?quality=95&strip=all" />
-		  
+
 		  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
 		  <a href="#" id="summaryBtn" onClick="showSummary()">Summary</a>
 		  <a href="#" id="devicesBtn" class="dropbtn">Devices</a>
 		    <div id="dropdownButtons" style="display:none;"></div>
 		  <a href="#" id="problemsBtn" onClick="showProblems()">Problems</a>
-		  <a href="#" id="historyBtn">History</a>
+		  <a href="#" id="historyBtn" onClick="historyHandler()">History</a>
 		  <a href="#" onClick="alert('Not Implemented Yet!')" id="settingsBtn"><img width="25%" class="settings" src="Images/settingsIcon.png" /></a>
 		</div>
 
@@ -64,6 +64,10 @@
 			</div>
 
 			<div id="problems">
+
+			</div>
+
+			<div id="history">
 
 			</div>
 

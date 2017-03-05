@@ -30,7 +30,7 @@ function handleRequest(req, res) {
 		}
 		respond(200, "");
 	} else if (urlObj.pathname === '/history/') {
-		//give him the hist
+		respond(200, JSON.stringify(deviceHistory));
 	}else if (urlObj.pathname === '/createList/'){
 		var queryData = url.parse(req.url, true).query;
 
