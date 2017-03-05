@@ -1,6 +1,13 @@
 const API = "http://cuhackathon-challenge.martellotech.com";
 var deviceList = []; //this will hold all 14 (or so) objects
 var currentPage = -1;
+var totalReceived = [];
+var totalSent = [];
+var packetsLost = [];
+var receiver;
+var sender;
+var packetloser;
+var historyLength;
 
 $(document).ready(function(){ //this function runs once the page loads!
   poll();
@@ -60,6 +67,9 @@ function createList(data){
 //this adds the new device to our local deviceList, and appends it to the document
 function add(data){
   deviceList.push(data);
+  totalReceived.push(0);
+  totalSent.push(0);
+  packetsLost.push(0);
 
   $(".deviceNumber").html(deviceList.length);
 
@@ -128,6 +138,7 @@ function showSummary(){
 }
 
 function showProblems(){
+  currentPage = -1;
   var badPacketRates = [];
   var suspiciousDevices = [];
   var validDevices = [];
@@ -187,7 +198,7 @@ function showProblems(){
     problemsInfo += "<table class='problemsTable'><tr><td class='noIssues'> Packet Loss Rates </td><td class='noIssues'> No Suspicious Devices </td></tr></table>";
   } else if (badPacketRates == 0 && suspiciousDevices != 0) {
     problemsInfo += "<table class='problemsTable'><tr><td class='noIssues'> Packet Loss Rates </td></tr><tr>";
-    
+
     for (var q in suspiciousDevices){
       problemsInfo += "<td style='background-color:red; padding:40px;'>Suspicious Device: <br/>"+ suspiciousDevices[q].name + "<br/>" + suspiciousDevices[q].ipAddress +"</td>";
     }
@@ -196,7 +207,7 @@ function showProblems(){
 
   } else if (badPacketRates != 0 && suspiciousDevices == 0) {
     problemsInfo += "<table class='problemsTable'><tr>";
-    
+
     for (var x in badPacketRates) {
       problemsInfo += "<td style='background-color:red; padding:40px;'>Bad Packet Rate: <br />" + badPacketRates[x].name + "<br/>" + badPacketRates[x].packetLossRate +"</td>";
     }
@@ -209,20 +220,30 @@ function showProblems(){
 
 //this function displays the device history
 function showHistory(data){
+  currentPage = -1;
   $("#history").empty();
   $("#device").hide();
   $("#summary").hide();
   $("#problems").hide();
   $("#history").show();
 
-  var historyInfo = "<div><h1> History </h1></div>";
+  totalReceived = [];
+  totalSent = [];
+  packetsLost = [];
+
+  var historyInfo = "<div><h1> Device History </h1></div>";
   $("#history").append(historyInfo);
+  historyLength = data.length;
   for (var i=0; i<data.length; i++){
-    $("#history").append("<h3>Device List: " + i + " </h3>")
     for (var j=0; j<data[i].length; j++){
-        displayList(data[i][j]);
+      totalReceived.push(0);
+      totalSent.push(0);
+      packetsLost.push(0);
+      if (data[i][j].deviceType == "router") continue;
+      byteSum(data[i][j]);
     }
   }
+  printHistory();
 }
 
 //this is the click handler for the history button
@@ -233,4 +254,33 @@ function historyHandler(){
     success: showHistory,
     dataType:'json'
   });
+}
+
+function byteSum(data) {
+  totalReceived[data.deviceNum] += data.interfaces[0].bytesReceived;
+  totalSent[data.deviceNum] += data.interfaces[0].bytesSent;
+  packetsLost[data.deviceNum] += data.interfaces[0].packetsLost;
+}
+
+function printHistory(){
+  var rec = 0;
+  var sendr = 0;
+  var pl = 0;
+  for (var i=0; i<totalReceived.length; i++){
+    if (totalReceived[i] > totalReceived[rec]){
+      rec = i;
+    }
+    if (totalSent[i] > totalSent[sendr]){
+      sendr = i;
+    }
+    if (packetsLost[i] > packetsLost[pl]){
+      pl = i;
+    }
+  }
+  $("#history").append("<p>Highest average packets received in last 10 minutes:<br>" +
+    totalReceived[rec]/historyLength + " from: " + deviceList[rec].name + "</p><br>");
+  $("#history").append("<p>Highest average packets sent in last 10 minutes:<br>" +
+    totalSent[sendr]/historyLength + " from: " + deviceList[sendr].name + "</p><br>");
+  $("#history").append("<p>Highest average packets lost in last 10 minutes:<br>" +
+    packetsLost[pl]/historyLength + " from: " + deviceList[pl].name + "</p>");
 }
