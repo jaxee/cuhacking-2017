@@ -88,7 +88,6 @@ function showDeviceInfo(num) {
 
   var deviceInfo = "<div id='pageTitle'><h1> Devices </h1></div><h2>"+ deviceList[num].name +"</h2> <h4>"+ deviceList[num].description +"</h4> <img width='20%' class='deviceImage' src='./Images/" + deviceList[num].deviceType +".png' /> <p class='ipAdd'>"+ deviceList[num].interfaces[0].ipAddress +"</p> <table class='deviceInformation'> <tr> <td> " + deviceList[num].interfaces[0].bytesReceived + " </td> <td> " + deviceList[num].interfaces[0].bytesSent  + " </td> <td>" + deviceList[num].interfaces[0].packetsLost +"</td> <td>"+ deviceList[num].interfaces[0].packetLossRate  +"%</td></tr> <tr> <td> Bytes Recieved </td> <td> Bytes Sent </td> <td> Packets Lost </td> <td> Packet Lost Rate </td> </tr></table><table class='deviceInformation'> <tr> <td>"+ deviceList[num].lastSeen +"</td> <td>"+ deviceList[num].interfaces[0].gateway +"</td> <td>" + deviceList[num].interfaces[0].macAddress +"</td></tr> <tr> <td> Last Update </td> <td> Gateway </td> <td> Mac Address </td> </tr></table><hr/><div id='devices'></div><p></p>";
   $("#device").append(deviceInfo);
-
   displayList(deviceList[num]);
 }
 
@@ -116,7 +115,6 @@ function displayList(data){
     }
     var newData = $("<h5 data-item='"+i+"'>" + i + " : " + formattedData + "</h5>");
     $("#devices").append(newData);
-    $("#history").append(newData); //yolo
   }
 }
 
@@ -179,10 +177,10 @@ function showProblems(){
   if (badPacketRates != 0 && suspiciousDevices != 0) {
     problemsInfo += "<h3> Packet Loss Rate </h3><table class='problemsTable'><tr>";
     for (var x in badPacketRates) {
-      problemsInfo += "<td>"+ badPacketRates[x].name +"</td><td style='background-color:red; padding:40px;'>" + badPacketRates[x].packetLossRate +"</td>";
+      problemsInfo += "<td style='background-color:red; padding:40px;'> Bad Packet Rate: <br/>" + badPacketRates[x].name + "<br/>" + badPacketRates[x].packetLossRate +"</td>";
     }
     for (var t in suspiciousDevices){
-      problemsInfo += "<td>"+ suspiciousDevices[t].name+"</td><td style='background-color:red; padding:40px;'>" + suspiciousDevices[t].ipAddress +"</td>";
+      problemsInfo += "<td style='background-color:red; padding:40px;'> Suspicious Device: <br/>" +suspiciousDevices[t].name + "<br />" + suspiciousDevices[t].ipAddress +"</td>";
     }
     problemsInfo += "</tr></table>";
   } else if(badPacketRates == 0 && suspiciousDevices == 0) {
@@ -191,7 +189,7 @@ function showProblems(){
     problemsInfo += "<table class='problemsTable'><tr><td class='noIssues'> Packet Loss Rates </td></tr><tr>";
     
     for (var q in suspiciousDevices){
-      problemsInfo += "<td>"+ suspiciousDevices[q].name+"</td><td style='background-color:red; padding:40px;'>" + suspiciousDevices[q].ipAddress +"</td>";
+      problemsInfo += "<td style='background-color:red; padding:40px;'>Suspicious Device: <br/>"+ suspiciousDevices[q].name + "<br/>" + suspiciousDevices[q].ipAddress +"</td>";
     }
 
     problemsInfo += "</tr></table>";
@@ -200,7 +198,7 @@ function showProblems(){
     problemsInfo += "<table class='problemsTable'><tr>";
     
     for (var x in badPacketRates) {
-      problemsInfo += "<td>"+ badPacketRates[x].name +"</td><td style='background-color:red; padding:40px;'>" + badPacketRates[x].packetLossRate +"</td>";
+      problemsInfo += "<td style='background-color:red; padding:40px;'>Bad Packet Rate: <br />" + badPacketRates[x].name + "<br/>" + badPacketRates[x].packetLossRate +"</td>";
     }
 
     problemsInfo += "</tr><tr><td class='noIssues'> No Suspicious Devices </td></tr></table>";
