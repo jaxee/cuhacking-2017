@@ -37,12 +37,13 @@ function handleRequest(req, res) {
 		var queryData = url.parse(req.url, true).query;
 
 		var postBody = "";
-    req.setEncoding('utf8');
-    req.on('data', function(chunk){
-    	postBody+=chunk;
-    });
-    req.on('end', function(){
-    	var data = JSON.parse(postBody);
+	    req.setEncoding('utf8');
+	    req.on('data', function(chunk){
+	    	postBody+=chunk;
+	    });
+
+    	req.on('end', function(){
+    		var data = JSON.parse(postBody);
 			newDevice = {};
 			for (var i in data){ //for each (i : data[i]) in data
 				if (data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
@@ -58,6 +59,9 @@ function handleRequest(req, res) {
 					newDevice[i] = data[i];
 				}
 			}
+
+			newDevice.deviceType = findDeviceType(data);
+
 			deviceList[deviceNum] = newDevice; //we add this new device to the server's list
 			deviceNum++;
 
@@ -110,50 +114,34 @@ function handleRequest(req, res) {
 };//end handle request
 
 function findDeviceType(data) {
-	var deviceHome;
-
 	var lowerName = data.name.toLowerCase();
 	var lowerDesc = data.description.toLowerCase();
 
+	var type;
+
 	if (lowerName.indexOf("phone") !== -1 || lowerDesc.indexOf("phone") !== -1 || lowerDesc.indexOf("android") !== -1) {
-		deviceHome = createHomePageOb(data, "phone");
+		type = "phone";
 	} else if (lowerName.indexOf("tv") !== -1 || lowerDesc.indexOf("tv") !== -1) {
-		deviceHome = createHomePageOb(data, "television");
+		type = "television";
 	} else if (lowerName.indexOf("desktop") !== -1 || lowerDesc.indexOf("desktop") !== -1){
-		deviceHome = createHomePageOb(data, "computer");
+		type = "computer";
 	} else if (lowerName.indexOf("gateway") !== -1 || lowerDesc.indexOf("gateway") !== -1) {
-		deviceHome = createHomePageOb(data, "router");
+		type = "router";
 	} else if (lowerName.indexOf("toast") !== -1 || lowerDesc.indexOf("toast") !== -1) {
-		deviceHome = createHomePageOb(data, "toaster");
+		type = "toaster";
 	} else if (lowerName.indexOf("thermostat") !== -1 || lowerDesc.indexOf("thermostat") !== -1) {
-		deviceHome = createHomePageOb(data, "thermostat");
+		type = "thermostat";
 	} else if (lowerName.indexOf("printer") !== -1 || lowerDesc.indexOf("printer") !== -1) {
-		deviceHome = createHomePageOb(data, "printer");
+		type = "printer";
 	} else if (lowerName.indexOf("xbox") !== -1 || lowerDesc.indexOf("xbox") !== -1 || lowerDesc.indexOf("playstation") !== -1 || lowerName.indexOf("playstation") !== -1 || lowerDesc.indexOf("wii") !== -1 || lowerName.indexOf("wii") !== -1) {
-		deviceHome = createHomePageOb(data, "console");
+		type = "console";
 	} else if (lowerName.indexOf("smoke") !== -1 || lowerDesc.indexOf("smoke") !== -1) {
-		deviceHome = createHomePageOb(data, "smokedetector");
+		type = "smokedetector";
 	} else if (lowerName.indexOf("chromecast") !== -1 || lowerDesc.indexOf("chromecast") !== -1) {
-		deviceHome = createHomePageOb(data, "chromecast");
+		type = "chromecast";
 	} else {
-		deviceHome = {
-			name: data.name,
-			description: data.description,
-			type: "generic"
-		}
+		type = "generic";
 	}
 
-	return deviceHome;
-}
-
-function createHomePageOb(data, type) {
-	var device;
-
-	device = {
-		name: data.name,
-		description: data.description,
-		type: type
-	}
-
-	return device;
+	return type;
 }
