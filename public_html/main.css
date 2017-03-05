@@ -189,6 +189,15 @@ td a {
     display:none !important;
 }
 
+.noIssues {
+	padding:40px;
+	background-color:green;
+}
+
+.problemsTable{
+	margin:auto auto;
+}
+
 /* MOBILE ADJUSTMENTS */
 @media (max-width:700px) {
     .sidenav{

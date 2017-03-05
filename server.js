@@ -110,7 +110,7 @@ function findDeviceType(data) {
 		type = "phone";
 	} else if (lowerName.indexOf("tv") !== -1 || lowerDesc.indexOf("tv") !== -1) {
 		type = "television";
-	} else if (lowerName.indexOf("desktop") !== -1 || lowerDesc.indexOf("desktop") !== -1){
+	} else if (lowerName.indexOf("desktop") !== -1 || lowerDesc.indexOf("desktop") !== -1 || lowerName.indexOf("laptop") !== -1 || lowerDesc.indexOf("laptop") !== -1){
 		type = "computer";
 	} else if (lowerName.indexOf("gateway") !== -1 || lowerDesc.indexOf("gateway") !== -1) {
 		type = "router";

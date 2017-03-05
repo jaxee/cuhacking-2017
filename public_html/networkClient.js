@@ -130,6 +130,20 @@ function showSummary(){
 }
 
 function showProblems(){
+  var badPacketRates = [];
+  var suspiciousDevices = [];
+  var validDevices = [];
+
+  for(var j in deviceList){
+      if(deviceList[j].deviceType == "router") {
+      for (var r in deviceList[j].dhcpClients){
+        validDevices.push(deviceList[j].dhcpClients[r].ip_address);
+      }
+
+      validDevices.push(deviceList[j].interfaces[0].ipAddress);
+    }
+  }
+
   $("#problems").empty();
   $("#history").hide();
   $("#device").hide();
@@ -137,6 +151,61 @@ function showProblems(){
   $("#problems").show();
 
   var problemsInfo = "<div id='pageTitle'><h1> Problems </h1></div>";
+
+  for(var i in deviceList){
+    var isValidDevice = false;
+
+    if (deviceList[i].interfaces[0].packetLossRate > 0.002) {
+      badPacketRates[{
+        name: deviceList[i].name,
+        packetLossRate: deviceList[i].interfaces[0].packetLossRate
+      }];
+    }
+
+    for(var w in validDevices){
+      if(deviceList[i].interfaces[0].ipAddress == validDevices[w]){
+        isValidDevice = true;
+      }
+    }
+
+    if(!isValidDevice){
+      suspiciousDevices.push({
+        name: deviceList[i].name,
+        ipAddress: deviceList[i].interfaces[0].ipAddress
+      });
+    }
+  }
+
+  if (badPacketRates != 0 && suspiciousDevices != 0) {
+    problemsInfo += "<h3> Packet Loss Rate </h3><table class='problemsTable'><tr>";
+    for (var x in badPacketRates) {
+      problemsInfo += "<td>"+ badPacketRates[x].name +"</td><td style='background-color:red; padding:40px;'>" + badPacketRates[x].packetLossRate +"</td>";
+    }
+    for (var t in suspiciousDevices){
+      problemsInfo += "<td>"+ suspiciousDevices[t].name+"</td><td style='background-color:red; padding:40px;'>" + suspiciousDevices[t].ipAddress +"</td>";
+    }
+    problemsInfo += "</tr></table>";
+  } else if(badPacketRates == 0 && suspiciousDevices == 0) {
+    problemsInfo += "<table class='problemsTable'><tr><td class='noIssues'> Packet Loss Rates </td><td class='noIssues'> No Suspicious Devices </td></tr></table>";
+  } else if (badPacketRates == 0 && suspiciousDevices != 0) {
+    problemsInfo += "<table class='problemsTable'><tr><td class='noIssues'> Packet Loss Rates </td></tr><tr>";
+    
+    for (var q in suspiciousDevices){
+      problemsInfo += "<td>"+ suspiciousDevices[q].name+"</td><td style='background-color:red; padding:40px;'>" + suspiciousDevices[q].ipAddress +"</td>";
+    }
+
+    problemsInfo += "</tr></table>";
+
+  } else if (badPacketRates != 0 && suspiciousDevices == 0) {
+    problemsInfo += "<table class='problemsTable'><tr>";
+    
+    for (var x in badPacketRates) {
+      problemsInfo += "<td>"+ badPacketRates[x].name +"</td><td style='background-color:red; padding:40px;'>" + badPacketRates[x].packetLossRate +"</td>";
+    }
+
+    problemsInfo += "</tr><tr><td class='noIssues'> No Suspicious Devices </td></tr></table>";
+  }
+
   $("#problems").append(problemsInfo);
 }
 
