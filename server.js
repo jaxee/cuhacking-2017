@@ -3,11 +3,15 @@ var fs = require('fs');
 var mime = require('mime-types');
 var url = require('url');
 
+var _ = require('underscore');
+
 const ROOT = "./public_html";
 
 var server = http.createServer(handleRequest); 
 server.listen(2017);
 console.log('Server listening on port 2017');
+
+var devices = {};
 
 function handleRequest(req, res) {
 	//process the request
@@ -18,8 +22,20 @@ function handleRequest(req, res) {
 	var filename = ROOT+urlObj.pathname;
 
 	//the callback sequence for static serving...
-	if (urlObj.pathname ==='/devices/') {
+	if (urlObj.pathname ==='/getType/') {
 		var queryData = url.parse(req.url, true).query;
+
+		var postBody = "";
+        req.setEncoding('utf8');
+        req.on('data', function(chunk){
+            postBody+=chunk;
+        });
+        req.on('end', function(){
+            var userData = JSON.parse(postBody);
+            var data = findDeviceType(userData);
+
+            respond(200, JSON.stringify(data));
+        });
 
 		console.log("Query Data");
 
@@ -30,7 +46,7 @@ function handleRequest(req, res) {
 			}else{
 				if(stats.isDirectory())	filename+="/index.html";
 			
-				fs.readFile(filename,"utf8",function(err, data){
+				fs.readFile(filename,function(err, data){
 					if(err)respondErr(err);
 					else respond(200,data);
 				});
@@ -68,3 +84,52 @@ function handleRequest(req, res) {
 	}	
 	
 };//end handle request
+
+function findDeviceType(data) {		
+	var deviceHome;
+
+	var lowerName = data.name.toLowerCase();
+	var lowerDesc = data.description.toLowerCase();
+
+	if (lowerName.indexOf("phone") !== -1 || lowerDesc.indexOf("phone") !== -1 || lowerDesc.indexOf("android") !== -1) {
+		deviceHome = createHomePageOb(data, "phone");
+	} else if (lowerName.indexOf("tv") !== -1 || lowerDesc.indexOf("tv") !== -1) {
+		deviceHome = createHomePageOb(data, "television");
+	} else if (lowerName.indexOf("desktop") !== -1 || lowerDesc.indexOf("desktop") !== -1){
+		deviceHome = createHomePageOb(data, "computer");
+	} else if (lowerName.indexOf("gateway") !== -1 || lowerDesc.indexOf("gateway") !== -1) {
+		deviceHome = createHomePageOb(data, "router");
+	} else if (lowerName.indexOf("toast") !== -1 || lowerDesc.indexOf("toast") !== -1) {
+		deviceHome = createHomePageOb(data, "toaster");
+	} else if (lowerName.indexOf("thermostat") !== -1 || lowerDesc.indexOf("thermostat") !== -1) {
+		deviceHome = createHomePageOb(data, "thermostat");
+	} else if (lowerName.indexOf("printer") !== -1 || lowerDesc.indexOf("printer") !== -1) {
+		deviceHome = createHomePageOb(data, "printer");
+	} else if (lowerName.indexOf("xbox") !== -1 || lowerDesc.indexOf("xbox") !== -1 || lowerDesc.indexOf("playstation") !== -1 || lowerName.indexOf("playstation") !== -1 || lowerDesc.indexOf("wii") !== -1 || lowerName.indexOf("wii") !== -1) {
+		deviceHome = createHomePageOb(data, "console");
+	} else if (lowerName.indexOf("smoke") !== -1 || lowerDesc.indexOf("smoke") !== -1) {
+		deviceHome = createHomePageOb(data, "smokedetector");
+	} else if (lowerName.indexOf("chromecast") !== -1 || lowerDesc.indexOf("chromecast") !== -1) {
+		deviceHome = createHomePageOb(data, "chromecast");
+	} else {
+		deviceHome = {
+			name: data.name,
+			description: data.description,
+			type: "generic"
+		}
+	}
+	
+	return deviceHome;
+}
+
+function createHomePageOb(data, type) {
+	var device;
+
+	device = {
+		name: data.name,
+		description: data.description,
+		type: type
+	}
+
+	return device;
+}

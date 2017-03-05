@@ -11,7 +11,8 @@
     "url": "git+https://github.com/jaxee/cuhacking-2017.git"
   },
   "dependencies": {
-    "mime-types": "*"
+    "mime-types": "*",
+    "underscore": "*"
   },
   "author": "Jackie Ellis",
   "license": "ISC",

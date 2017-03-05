@@ -1,6 +1,3 @@
-/*
-Author - Matthew Moulton (101010631)
-*/
 const API = "http://cuhackathon-challenge.martellotech.com";
 var deviceNum = 0;
 
@@ -21,6 +18,8 @@ function requestDevices(){
 
 //this sets up a list of device objects on the server
 function requestDevice(data){
+  $("#devices").empty();
+
   for (var i in data){
     $.ajax({ //send off a request for a new game, telling the server our answer to the current one
       method:"GET",
@@ -49,4 +48,23 @@ function createList(data){
     $("#devices tr:eq("+deviceNum+")").append(newData);
   }
   deviceNum++;
+
+  $("#devices").append("<h2> " + data.name + "<h2>");
+  $("#devices").append("<p>" + data.description + "</p>");
+  $("#devices").append("\n"); 
+
+  $.ajax({ //send off a request for a new game, telling the server our answer to the current one
+      method:"POST",
+      url:"/getType/",
+      data: JSON.stringify(data), //send the json object we got from the server
+      success: showHomeInfo,
+      dataType:'json'
+  });
+}
+
+function showHomeInfo(data) {
+   console.log(deviceNum);
+   $(".deviceNumber").html(deviceNum);
+
+  $("#allDevices").append("<li><div id='deviceIcon'><img width='50%' src='./Images/"+data.type+".png'/></div><div id='deviceInfo'><h4><b>" + data.name + "</b></h4><p>" + data.description +"</p<</div></li>"); 
 }
