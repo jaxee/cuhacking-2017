@@ -76,7 +76,7 @@ function showDeviceInfo(num) {
   $("#summary").hide();
   $("#device").show();
 
-  var deviceInfo = "<div id='pageTitle'><h1> Devices </h1></div><h2>"+ deviceList[num].name +"</h2> <h4>"+ deviceList[num].description +"</h4> <img width='20%' class='deviceImage' src='./Images/" + deviceList[num].deviceType +".png' /> <p class='ipAdd'>"+ deviceList[num].ipAddress +"</p> <table class='deviceInformation'> <tr> <td> " + deviceList[num].bytesReceived + " </td> <td> " + deviceList[num].bytesSent  + " </td> <td>" + deviceList[num].packetsLost +"</td> <td>"+ deviceList[num].packetLossRate  +"%</td></tr> <tr> <td> Bytes Recieved </td> <td> Bytes Sent </td> <td> Packets Lost </td> <td> Packet Lost Rate </td> </tr></table><table class='deviceInformation'> <tr> <td>"+ deviceList[num].lastSeen +"</td> <td>"+ deviceList[num].gateway +"</td> <td>" + deviceList[num].macAddress +"</td></tr> <tr> <td> Last Update </td> <td> Gateway </td> <td> Mac Address </td> </tr></table><div id='devices'></div><p></p>";
+  var deviceInfo = "<div id='pageTitle'><h1> Devices </h1></div><h2>"+ deviceList[num].name +"</h2> <h4>"+ deviceList[num].description +"</h4> <img width='20%' class='deviceImage' src='./Images/" + deviceList[num].deviceType +".png' /> <p class='ipAdd'>"+ deviceList[num].interfaces[0].ipAddress +"</p> <table class='deviceInformation'> <tr> <td> " + deviceList[num].interfaces[0].bytesReceived + " </td> <td> " + deviceList[num].interfaces[0].bytesSent  + " </td> <td>" + deviceList[num].interfaces[0].packetsLost +"</td> <td>"+ deviceList[num].interfaces[0].packetLossRate  +"%</td></tr> <tr> <td> Bytes Recieved </td> <td> Bytes Sent </td> <td> Packets Lost </td> <td> Packet Lost Rate </td> </tr></table><table class='deviceInformation'> <tr> <td>"+ deviceList[num].lastSeen +"</td> <td>"+ deviceList[num].interfaces[0].gateway +"</td> <td>" + deviceList[num].interfaces[0].macAddress +"</td></tr> <tr> <td> Last Update </td> <td> Gateway </td> <td> Mac Address </td> </tr></table><div id='devices'></div><p></p>";
   $("#device").append(deviceInfo);
 
   displayList(deviceList[num]);
@@ -84,7 +84,7 @@ function showDeviceInfo(num) {
 
 function displayList(data){
   for (var i in data){ //for each (i : data[i]) in data
-    if (i == "name" || i == "description" || i == "ipAddress" || i == "alarms" || i == "deviceNum" || i == "deviceType" || i == "bytesReceived" || i == "bytesSent" || i == "packetLossRate" || i == "packetsLost" || i == "lastSeen" || i == "uptime" || i == "netmask" || i == "macAddress" || i == "gateway") continue;
+    if (i == "name" || i == "description" || i == "ipAddress" || i == "alarms" || i == "deviceNum" || i == "deviceType" || i == "lastSeen" || i == "uptime" || i == "interfaces" || i == "document") continue;
     formattedData = "";
     if (data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
       formattedData += "[<br>&nbsp&nbsp";

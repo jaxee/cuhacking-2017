@@ -175,3 +175,33 @@ td a {
 .bottomDeviceInfo {
 	margin-bottom:15px;
 }
+
+/* MOBILE ADJUSTMENTS */
+@media (max-width:700px) {
+    .sidenav{
+        z-index:2;
+        width:0;
+    }
+    
+    .sidenav a{
+        font-size:60px;
+    }
+    
+    #dropdownButtons a{
+        font-size:40px;
+    }
+    .openMenuTab {
+        position: absolute;
+        top: 40%;
+        left: 0px;
+    }
+    
+    .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 150px;
+        opacity:0.5;
+        margin-left: 50px;
+    }
+}

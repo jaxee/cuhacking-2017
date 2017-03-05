@@ -38,7 +38,7 @@ function handleRequest(req, res) {
     		var data = JSON.parse(postBody);
 			newDevice = {};
 			for (var i in data){ //for each (i : data[i]) in data
-				if (data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
+				if (false && data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
 					for (var j = 0; j<data[i].length; j++){ //for (each j : data[i][j]) in data[i]
 						if (typeof(data[i][j]) === "object"){ //this is an object in an array
 							for (var k in data[i][j]){ //for (each k : data[i][j][k]) in data[i][j]
