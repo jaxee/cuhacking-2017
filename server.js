@@ -25,7 +25,7 @@ function handleRequest(req, res) {
 		deviceNum = 0;
 
 		respond(200, "");
-	} else if (urlObj.pathname === '/createList/'){		
+	} else if (urlObj.pathname === '/createList/'){
 		var queryData = url.parse(req.url, true).query;
 
 		var postBody = "";
@@ -36,29 +36,17 @@ function handleRequest(req, res) {
 
     	req.on('end', function(){
     		var data = JSON.parse(postBody);
-			newDevice = {};
-			for (var i in data){ //for each (i : data[i]) in data
-				if (false && data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
-					for (var j = 0; j<data[i].length; j++){ //for (each j : data[i][j]) in data[i]
-						if (typeof(data[i][j]) === "object"){ //this is an object in an array
-							for (var k in data[i][j]){ //for (each k : data[i][j][k]) in data[i][j]
-								newDevice[k] = data[i][j][k];
-							}
-						}
-					}
-				}
-				else{ //data[i] was not an object, store it regularly
+				newDevice = {};
+				for (var i in data){ //for each (i : data[i]) in data
 					newDevice[i] = data[i];
 				}
-			}
+				newDevice.deviceType = findDeviceType(data);
+				newDevice.deviceNum = deviceNum;
 
-			newDevice.deviceType = findDeviceType(data);
-			newDevice.deviceNum = deviceNum;
+				deviceList[deviceNum] = newDevice; //we add this new device to the server's list
+				deviceNum++;
 
-			deviceList[deviceNum] = newDevice; //we add this new device to the server's list
-			deviceNum++;
-
-			respond(200, JSON.stringify(newDevice)); //we return a single device that was newly created
+				respond(200, JSON.stringify(newDevice)); //we return a single device that was newly created
     	});
 	} else {
 		fs.stat(filename,function(err, stats){

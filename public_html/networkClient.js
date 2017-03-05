@@ -1,5 +1,6 @@
 const API = "http://cuhackathon-challenge.martellotech.com";
 var deviceList = []; //this will hold all 14 (or so) objects
+var currentPage = -1;
 
 $(document).ready(function(){ //this function runs once the page loads!
   poll();
@@ -17,9 +18,8 @@ function poll(duration){
       dataType:'json'
   });
   requestDevices();
-  setTimeout(poll,60000);
+  setTimeout(poll,20000); //change back to 60,000 later
 }
-
 
 //this requests a list of devices from the API
 function requestDevices(){
@@ -56,6 +56,7 @@ function createList(data){
   });
 }
 
+//this adds the new device to our local deviceList, and appends it to the document
 function add(data){
   deviceList.push(data);
 
@@ -69,9 +70,15 @@ function add(data){
 
   var cell = "<td><a href='#' onClick='showDeviceInfo("+ data.deviceNum +")'><img width='50%' src='./Images/" + data.deviceType +".png' /><div id='deviceInfo'><h4><b>" + data.name + "</b></h4> </a> <p>" + data.description +"</p></div></td>";
   $("#allDevices tr:eq("+ parseInt(data.deviceNum/4) +")").append(cell);
+
+  if (currentPage != -1){ //prevents messing the page up when polling
+    showDeviceInfo(currentPage);
+  }
 }
 
+//this shows an individual device's page to the user
 function showDeviceInfo(num) {
+  currentPage = num;
   $("#device").empty();
   $("#summary").hide();
   $("#device").show();
@@ -82,23 +89,23 @@ function showDeviceInfo(num) {
   displayList(deviceList[num]);
 }
 
+//this appends a single device's information to the document
 function displayList(data){
   for (var i in data){ //for each (i : data[i]) in data
-    if (i == "name" || i == "description" || i == "ipAddress" || i == "alarms" || i == "deviceNum" || i == "deviceType" || i == "lastSeen" || i == "uptime" || i == "interfaces" || i == "document") continue;
     formattedData = "";
+    if (i == "name" || i == "description" || i == "ipAddress" || i == "alarms" || i == "deviceNum" || i == "deviceType" || i == "lastSeen" || i == "uptime" || i == "interfaces" || i == "document") continue;
     if (data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
-      formattedData += "[<br>&nbsp&nbsp";
+      formattedData += "<br>";
       for (var j = 0; j<data[i].length; j++){ //for (each j : data[i][j]) in data[i]
         if (typeof(data[i][j]) === "object"){ //this is an object in an array
-          formattedData+= "{<br>&nbsp&nbsp&nbsp&nbsp";
+          formattedData+= "<br>";
           for (var k in data[i][j]){ //for (each k : data[i][j][k]) in data[i][j]
-            formattedData += k + " : " + data[i][j][k] + "<br>&nbsp&nbsp&nbsp&nbsp";
+            formattedData += k + " : " + data[i][j][k] + "<br>";
           }
-          formattedData = formattedData.substring(0, formattedData.length-10);
-          formattedData+= "}<br>";
+          //formattedData = formattedData.substring(0, formattedData.length-10);
+          formattedData+= "<br>";
         }
       }
-      formattedData += "]";
     }
     else{ //data[i] was not an object, display it regularly
       formattedData = data[i];
@@ -108,7 +115,9 @@ function displayList(data){
   }
 }
 
+//this shows the summary page when summary button is clicked
 function showSummary(){
+  currentPage = -1;
   $("#device").hide();
   $("#summary").show();
 }
