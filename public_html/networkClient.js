@@ -17,6 +17,7 @@ function poll(duration){
       data: "",
       dataType:'json'
   });
+  $("#dropdownButtons").empty();
   requestDevices();
   setTimeout(poll,20000); //change back to 60,000 later
 }
