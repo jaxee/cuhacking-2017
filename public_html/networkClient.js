@@ -2,15 +2,24 @@ const API = "http://cuhackathon-challenge.martellotech.com";
 var deviceList = []; //this will hold all 14 (or so) objects
 
 $(document).ready(function(){ //this function runs once the page loads!
+  poll();
+});
+
+//poll the API for another set of data every minute
+function poll(duration){
+  deviceList = [];
+  $("#allDevices").empty();
+  console.log("polling...");
   $.ajax({ //send off a request for a new game, telling the server our answer to the current one
       method:"POST",
       url:"/reset/",
       data: "",
       dataType:'json'
   });
-
   requestDevices();
-});
+  setTimeout(poll,60000);
+}
+
 
 //this requests a list of devices from the API
 function requestDevices(){
