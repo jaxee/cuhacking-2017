@@ -11,6 +11,11 @@
 		<script src="./networkClient.js"></script>
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		    <script type="text/javascript">
+		    google.charts.load('current', {'packages':['corechart']});
+		</script>
+
 		 <script>
 	        $(document).ready(function(){
 	            $( ".dropbtn" ).click(function() {
@@ -73,9 +78,10 @@
 
 			</div>
 
-			<div id="history">
-
-			</div>
+			<div id="history"></div>
+			<div id="recchart" style="width: 900px; height: 500px; background-color:rgb(51, 102, 255)!important;"></div>
+			<div id="sentchart" style="width: 900px; height: 500px;"></div>
+			<div id="lostchart" style="width: 900px; height: 500px;"></div>
 
 		</div>
 	</body>

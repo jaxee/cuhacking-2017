@@ -12,6 +12,7 @@ var populated = false;
 var collectNodes = [];
 var collectEdges = [];
 
+
 $(document).ready(function(){ //this function runs once the page loads!
   poll();
   showVisualization();
@@ -105,10 +106,6 @@ function add(data){
 }
 
 function initializeVis (nodes, edges){
-
-  console.log(nodes);
-  console.log(edges);
-
   var nodes = new vis.DataSet(nodes);
   var edges = new vis.DataSet(edges);
 
@@ -136,6 +133,9 @@ function showDeviceInfo(num) {
   $("#problems").hide();
   $("#mynetwork").hide();
   $("#history").hide();
+  $("#recchart").hide();
+  $("#sentchart").hide();
+  $("#lostchart").hide();
 
   var deviceInfo = "<div id='pageTitle'><h1> Devices </h1></div><h2>"+ deviceList[num].name +"</h2> <h4>"+ deviceList[num].description +"</h4> <img width='20%' class='deviceImage' src='./Images/" + deviceList[num].deviceType +".png' /> <p class='ipAdd'>"+ deviceList[num].interfaces[0].ipAddress +"</p> <table class='deviceInformation'> <tr> <td> " + deviceList[num].interfaces[0].bytesReceived + " </td> <td> " + deviceList[num].interfaces[0].bytesSent  + " </td> <td>" + deviceList[num].interfaces[0].packetsLost +"</td> <td>"+ deviceList[num].interfaces[0].packetLossRate  +"%</td></tr> <tr> <td> Bytes Recieved </td> <td> Bytes Sent </td> <td> Packets Lost </td> <td> Packet Lost Rate </td> </tr></table><table class='deviceInformation'> <tr> <td>"+ deviceList[num].lastSeen +"</td> <td>"+ deviceList[num].interfaces[0].gateway +"</td> <td>" + deviceList[num].interfaces[0].macAddress +"</td></tr> <tr> <td> Last Update </td> <td> Gateway </td> <td> Mac Address </td> </tr></table><hr/><div id='devices'></div><p></p>";
   $("#device").append(deviceInfo);
@@ -176,6 +176,9 @@ function showSummary(){
   $("#problems").hide();
   $("#history").hide();
   $("#mynetwork").hide();
+  $("#recchart").hide();
+  $("#sentchart").hide();
+  $("#lostchart").hide();
 }
 
 function showVisualization(){
@@ -184,6 +187,9 @@ function showVisualization(){
   $("#problems").hide();
   $("#history").hide();
   $("#mynetwork").show();
+  $("#recchart").hide();
+  $("#sentchart").hide();
+  $("#lostchart").hide();
 }
 
 function showProblems(){
@@ -208,6 +214,9 @@ function showProblems(){
   $("#summary").hide();
   $("#problems").show();
   $("#mynetwork").hide();
+  $("#recchart").hide();
+  $("#sentchart").hide();
+  $("#lostchart").hide();
 
   var problemsInfo = "<div id='pageTitle'><h1> Problems </h1></div>";
 
@@ -277,6 +286,10 @@ function showHistory(data){
   $("#problems").hide();
   $("#history").show();
   $("#mynetwork").hide();
+  $("#history").show();
+  $("#recchart").show();
+  $("#sentchart").show();
+  $("#lostchart").show();
 
   totalReceived = [];
   totalSent = [];
@@ -328,10 +341,90 @@ function printHistory(){
       pl = i;
     }
   }
+  recData = [];
+  var tmpLabels = [];
+  for (var i = 0; i<deviceList.length; i++){
+    tmpLabels = [];
+    if (deviceList[i].deviceType == "router") continue;
+    tmpLabels.push(deviceList[i].name);
+    tmpLabels.push(totalReceived[i] / historyLength);
+    recData.push(tmpLabels);
+  }
+  sendData = [];
+  tmpLabels = [];
+  for (var i = 0; i<deviceList.length; i++){
+    tmpLabels = [];
+    if (deviceList[i].deviceType == "router") continue;
+    tmpLabels.push(deviceList[i].name);
+    tmpLabels.push(totalSent[i] / historyLength);
+    sendData.push(tmpLabels);
+  }
+  lostData = [];
+  tmpLabels = [];
+  for (var i = 0; i<deviceList.length; i++){
+    tmpLabels = [];
+    if (deviceList[i].deviceType == "router") continue;
+    tmpLabels.push(deviceList[i].name);
+    tmpLabels.push(packetsLost[i] / historyLength);
+    lostData.push(tmpLabels);
+  }
+
   $("#history").append("<p>Highest average packets received in last 10 minutes:<br>" +
     totalReceived[rec]/historyLength + " from: " + deviceList[rec].name + "</p><br>");
   $("#history").append("<p>Highest average packets sent in last 10 minutes:<br>" +
     totalSent[sendr]/historyLength + " from: " + deviceList[sendr].name + "</p><br>");
   $("#history").append("<p>Highest average packets lost in last 10 minutes:<br>" +
     packetsLost[pl]/historyLength + " from: " + deviceList[pl].name + "</p>");
+
+    //mame a chart
+    drawChart(recData, sendData, lostData);
+}
+
+function drawChart(recData, sendData, lostData) {
+  var realData = [
+      ['Device Name', 'Bytes Received']
+  ];
+  for (var i = 0; i < recData.length; i++){
+    realData.push([recData[i][0], recData[i][1]]);
+  }
+  var tableData = google.visualization.arrayToDataTable(realData);
+  var options = {
+    title: 'Bytes Received per Device',
+    backgroundColor: '#3366ff'
+  };
+  var chart = new google.visualization.PieChart(document.getElementById('recchart'));
+
+  chart.draw(tableData, options);
+
+  //DRAW THE SENT DATA CHART
+  var realData = [
+      ['Device Name', 'Bytes Sent']
+  ];
+  for (var i = 0; i < sendData.length; i++){
+    realData.push([sendData[i][0], sendData[i][1]]);
+  }
+  var tableData = google.visualization.arrayToDataTable(realData);
+  var options = {
+    title: 'Bytes Sent per Device',
+    backgroundColor: '#3366ff'
+  };
+  var chart = new google.visualization.PieChart(document.getElementById('sentchart'));
+
+  chart.draw(tableData, options);
+
+  //DRAW THE SENT DATA CHART
+  var realData = [
+      ['Device Name', 'Bytes Lost']
+  ];
+  for (var i = 0; i < lostData.length; i++){
+    realData.push([lostData[i][0], lostData[i][1]]);
+  }
+  var tableData = google.visualization.arrayToDataTable(realData);
+  var options = {
+    title: 'Bytes Lost per Device',
+    backgroundColor: '#3366ff'
+  };
+  var chart = new google.visualization.PieChart(document.getElementById('lostchart'));
+
+  chart.draw(tableData, options);
 }
