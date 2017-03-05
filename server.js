@@ -2,21 +2,20 @@ var http = require('http');
 var fs = require('fs');
 var mime = require('mime-types');
 var url = require('url');
-
 var _ = require('underscore');
 
 const ROOT = "./public_html";
+var deviceList = [];
+var deviceNum = 0;
 
-var server = http.createServer(handleRequest); 
+var server = http.createServer(handleRequest);
 server.listen(2017);
 console.log('Server listening on port 2017');
-
-var devices = {};
 
 function handleRequest(req, res) {
 	//process the request
 	console.log(req.method+" request for: "+req.url);
-	
+
 	//parse the url
 	var urlObj = url.parse(req.url,true);
 	var filename = ROOT+urlObj.pathname;
@@ -24,45 +23,70 @@ function handleRequest(req, res) {
 	//the callback sequence for static serving...
 	if (urlObj.pathname ==='/getType/') {
 		var queryData = url.parse(req.url, true).query;
+		var postBody = "";
+    req.setEncoding('utf8');
+    req.on('data', function(chunk){
+    	postBody+=chunk;
+    });
+    req.on('end', function(){
+    	var userData = JSON.parse(postBody);
+    	var data = findDeviceType(userData);
+			respond(200, JSON.stringify(data));
+    });
+	} else if (urlObj.pathname === '/createList/'){
+		var queryData = url.parse(req.url, true).query;
 
 		var postBody = "";
-        req.setEncoding('utf8');
-        req.on('data', function(chunk){
-            postBody+=chunk;
-        });
-        req.on('end', function(){
-            var userData = JSON.parse(postBody);
-            var data = findDeviceType(userData);
+    req.setEncoding('utf8');
+    req.on('data', function(chunk){
+    	postBody+=chunk;
+    });
+    req.on('end', function(){
+    	var data = JSON.parse(postBody);
+			newDevice = {};
+			for (var i in data){ //for each (i : data[i]) in data
+				if (data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
+					for (var j = 0; j<data[i].length; j++){ //for (each j : data[i][j]) in data[i]
+						if (typeof(data[i][j]) === "object"){ //this is an object in an array
+							for (var k in data[i][j]){ //for (each k : data[i][j][k]) in data[i][j]
+								newDevice[k] = data[i][j][k];
+							}
+						}
+					}
+				}
+				else{ //data[i] was not an object, store it regularly
+					newDevice[i] = data[i];
+				}
+			}
+			deviceList[deviceNum] = newDevice; //we add this new device to the server's list
+			deviceNum++;
 
-            respond(200, JSON.stringify(data));
-        });
-
-		console.log("Query Data");
-
-	} else {
+			respond(200, JSON.stringify(newDevice)); //we return a single device that was newly created
+    });
+	}else {
 		fs.stat(filename,function(err, stats){
 			if(err){   //try and open the file and handle the error, handle the error
 				respondErr(err);
 			}else{
 				if(stats.isDirectory())	filename+="/index.html";
-			
+
 				fs.readFile(filename,function(err, data){
 					if(err)respondErr(err);
 					else respond(200,data);
 				});
 			}
-		});			
+		});
 	}
-	
+
 	//locally defined helper function
-	//serves 404 files 
+	//serves 404 files
 	function serve404(){
 		fs.readFile(ROOT+"/404.html","utf8",function(err,data){ //async
 			if(err)respond(500,err.message);
 			else respond(404,data);
 		});
 	}
-		
+
 	//locally defined helper function
 	//responds in error, and outputs to the console
 	function respondErr(err){
@@ -73,7 +97,7 @@ function handleRequest(req, res) {
 			respond(500,err.message);
 		}
 	}
-		
+
 	//locally defined helper function
 	//sends off the response message
 	function respond(code, data){
@@ -81,11 +105,11 @@ function handleRequest(req, res) {
 		res.writeHead(code, {'content-type': mime.lookup(filename)|| 'text/html'});
 		// write message and signal communication is complete
 		res.end(data);
-	}	
-	
+	}
+
 };//end handle request
 
-function findDeviceType(data) {		
+function findDeviceType(data) {
 	var deviceHome;
 
 	var lowerName = data.name.toLowerCase();
@@ -118,7 +142,7 @@ function findDeviceType(data) {
 			type: "generic"
 		}
 	}
-	
+
 	return deviceHome;
 }
 
