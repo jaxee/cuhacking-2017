@@ -8,7 +8,7 @@ $(document).ready(function(){ //this function runs once the page loads!
 
 //this requests a list of devices from the API
 function requestDevices(){
-    return $.ajax({
+    $.ajax({
       method:"GET",
       url:API+"/devices/",
       success: requestDevice,
