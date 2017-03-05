@@ -58,16 +58,10 @@ function add(data){
 
   $(".deviceNumber").html(deviceList.length);
 
-  if ((data.deviceNum % 3) == 0) {
+  if ((data.deviceNum % 4) == 0) {
     $("#allDevices").append("<tr></tr>");
   }
 
-<<<<<<< HEAD
-  var cell = "<td><img width='50%' src='./Images/" + data.deviceType +".png' /><div id='deviceInfo'><p><b>" + data.name + "</b></p> <p>" + data.description +"</p></div></td>";
-  $("#allDevices tr:eq("+ parseInt(data.deviceNum/3) +")").append(cell);
-=======
   var cell = "<td><img width='50%' src='./Images/" + data.deviceType +".png' /><div id='deviceInfo'><h4><b>" + data.name + "</b></h4> <p>" + data.description +"</p></div></td>";
-  console.log(data.deviceNum);
   $("#allDevices tr:eq("+ parseInt(data.deviceNum/4) +")").append(cell);
->>>>>>> 499e8d03d4921c37bbf80310892b1b96b008d88e
 }
