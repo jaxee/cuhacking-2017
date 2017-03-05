@@ -56,7 +56,50 @@ function add(data){
     $("#allDevices").append("<tr></tr>");
   }
 
-  var cell = "<td><img width='50%' src='./Images/" + data.deviceType +".png' /><div id='deviceInfo'><h4><b>" + data.name + "</b></h4> <p>" + data.description +"</p></div></td>";
-  console.log(data.deviceNum);
+  $("#dropdownButtons").append("<a href='#' onClick='showDeviceInfo("+ data.deviceNum +")'>" + data.name +"</a>");
+
+  var cell = "<td><a href='#' onClick='showDeviceInfo("+ data.deviceNum +")'><img width='50%' src='./Images/" + data.deviceType +".png' /><div id='deviceInfo'><h4><b>" + data.name + "</b></h4> </a> <p>" + data.description +"</p></div></td>";
   $("#allDevices tr:eq("+ parseInt(data.deviceNum/4) +")").append(cell);
+}
+
+function showDeviceInfo(num) {
+  $("#device").empty();
+  $("#summary").hide();
+  $("#device").show();
+
+  var deviceInfo = "<div id='pageTitle'><h1> Devices </h1></div><h2>"+ deviceList[num].name +"</h2> <h4>"+ deviceList[num].description +"</h4> <img width='20%' class='deviceImage' src='./Images/" + deviceList[num].deviceType +".png' /> <p class='ipAdd'>"+ deviceList[num].ipAddress +"</p> <table class='deviceInformation'> <tr> <td> " + deviceList[num].bytesReceived + " </td> <td> " + deviceList[num].bytesSent  + " </td> <td>" + deviceList[num].packetsLost +"</td> <td>"+ deviceList[num].packetLossRate  +"%</td></tr> <tr> <td> Bytes Recieved </td> <td> Bytes Sent </td> <td> Packets Lost </td> <td> Packet Lost Rate </td> </tr></table><table class='deviceInformation'> <tr> <td>"+ deviceList[num].lastSeen +"</td> <td>"+ deviceList[num].gateway +"</td> <td>" + deviceList[num].macAddress +"</td></tr> <tr> <td> Last Update </td> <td> Gateway </td> <td> Mac Address </td> </tr></table><div id='devices'></div><p></p>";
+  $("#device").append(deviceInfo);
+
+  displayList(deviceList[num]);
+}
+
+function displayList(data){
+  for (var i in data){ //for each (i : data[i]) in data
+    if (i == "name" || i == "description" || i == "ipAddress" || i == "alarms" || i == "deviceNum" || i == "deviceType" || i == "bytesReceived" || i == "bytesSent" || i == "packetLossRate" || i == "packetsLost" || i == "lastSeen" || i == "uptime" || i == "netmask" || i == "macAddress" || i == "gateway") continue;
+    formattedData = "";
+    if (data[i] !== null && typeof(data[i]) === "object" && data[i].length !== 0){ //initial data is an array (never appears as Obj)
+      formattedData += "[<br>&nbsp&nbsp";
+      for (var j = 0; j<data[i].length; j++){ //for (each j : data[i][j]) in data[i]
+        if (typeof(data[i][j]) === "object"){ //this is an object in an array
+          formattedData+= "{<br>&nbsp&nbsp&nbsp&nbsp";
+          for (var k in data[i][j]){ //for (each k : data[i][j][k]) in data[i][j]
+            formattedData += k + " : " + data[i][j][k] + "<br>&nbsp&nbsp&nbsp&nbsp";
+          }
+          formattedData = formattedData.substring(0, formattedData.length-10);
+          formattedData+= "}<br>";
+        }
+      }
+      formattedData += "]";
+    }
+    else{ //data[i] was not an object, display it regularly
+      formattedData = data[i];
+    }
+    var newData = $("<p data-item='"+i+"'>" + i + " : " + formattedData + "</p>");
+    $("#devices").append(newData);
+  }
+}
+
+function showSummary(){
+  $("#device").hide();
+  $("#summary").show();
 }
