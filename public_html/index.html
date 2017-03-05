@@ -8,8 +8,32 @@
 
 		<script src="./networkClient.js"></script>
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+
+		 <script>
+	        $(document).ready(function(){
+	            $( ".dropbtn" ).click(function() {
+	                $( "#dropdownButtons" ).slideToggle( "slow" );
+	            });
+	        });
+	    </script>
 	</head>
 	<body>
+		<div id="mySidenav" class="sidenav">
+		  <img style="margin-top:-20px; padding-top:0px; padding-bottom:40px;" width="40%" src="https://i1.wp.com/www.organicweb.com.au/wp-content/uploads/2013/11/HTML5_Logo_256.png?quality=95&strip=all" />
+		  
+		  <a href="#" id="summaryBtn">Summary</a>
+		  <a href="#" id="devicesBtn" class="dropbtn">Devices</a>
+		    <div id="dropdownButtons" style="display:none;">
+		        <a href="#">Device 1</a>
+		        <a href="#">Device 2</a>
+		        <a href="#">Device 3</a>
+		        <a href="#">Device 4</a>
+		    </div>
+		  <a href="#" id="problemsBtn">Problems</a>
+		  <a href="#" id="updatesBtn">Updates</a>
+		  <a href="#" id="historyBtn">History</a>
+		  <a href="#" id="settingsBtn"><img width="25%" src="Images/settingsIcon.png" /></a>
+		</div>
 
 		<div id="content">
 			<div id="pageTitle">
