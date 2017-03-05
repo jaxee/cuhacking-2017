@@ -8,14 +8,20 @@ var receiver;
 var sender;
 var packetloser;
 var historyLength;
+var populated = false;
+var collectNodes = [];
+var collectEdges = [];
 
 $(document).ready(function(){ //this function runs once the page loads!
   poll();
+  showVisualization();
 });
 
 //poll the API for another set of data every minute
 function poll(duration){
   deviceList = [];
+  collectNode = [];
+  collectEdges = [];
   $("#allDevices").empty();
   console.log("polling...");
   $.ajax({ //send off a request for a new game, telling the server our answer to the current one
@@ -26,6 +32,7 @@ function poll(duration){
   });
   $("#dropdownButtons").empty();
   requestDevices();
+
   setTimeout(poll,20000); //change back to 60,000 later
 }
 
@@ -55,6 +62,7 @@ function requestDevice(data){
 
 //this creates an object for each device, and stores it in our deviceList object
 function createList(data){
+
   $.ajax({ //send off a request for a new game, telling the server our answer to the current one
       method:"POST",
       url:"/createList/",
@@ -70,6 +78,8 @@ function add(data){
   totalReceived.push(0);
   totalSent.push(0);
   packetsLost.push(0);
+  populated = true;
+
 
   $(".deviceNumber").html(deviceList.length);
 
@@ -85,6 +95,36 @@ function add(data){
   if (currentPage != -1){ //prevents messing the page up when polling
     showDeviceInfo(currentPage);
   }
+
+  collectNodes.push({id: data.deviceNum, label: data.name});
+  if (data.deviceNum != 0){
+    collectEdges.push({from: 0, to: data.deviceNum});
+  }
+  
+  initializeVis(collectNodes, collectEdges);
+}
+
+function initializeVis (nodes, edges){
+
+  console.log(nodes);
+  console.log(edges);
+
+  var nodes = new vis.DataSet(nodes);
+  var edges = new vis.DataSet(edges);
+
+  var container = document.getElementById('mynetwork');
+
+  var data = {
+      nodes: nodes,
+      edges: edges
+  };
+  var options = {};
+
+  options.nodes = {
+    color: '#f8ca69'
+  }
+
+  var network = new vis.Network(container, data, options); 
 }
 
 //this shows an individual device's page to the user
@@ -94,6 +134,7 @@ function showDeviceInfo(num) {
   $("#summary").hide();
   $("#device").show();
   $("#problems").hide();
+  $("#mynetwork").hide();
   $("#history").hide();
 
   var deviceInfo = "<div id='pageTitle'><h1> Devices </h1></div><h2>"+ deviceList[num].name +"</h2> <h4>"+ deviceList[num].description +"</h4> <img width='20%' class='deviceImage' src='./Images/" + deviceList[num].deviceType +".png' /> <p class='ipAdd'>"+ deviceList[num].interfaces[0].ipAddress +"</p> <table class='deviceInformation'> <tr> <td> " + deviceList[num].interfaces[0].bytesReceived + " </td> <td> " + deviceList[num].interfaces[0].bytesSent  + " </td> <td>" + deviceList[num].interfaces[0].packetsLost +"</td> <td>"+ deviceList[num].interfaces[0].packetLossRate  +"%</td></tr> <tr> <td> Bytes Recieved </td> <td> Bytes Sent </td> <td> Packets Lost </td> <td> Packet Lost Rate </td> </tr></table><table class='deviceInformation'> <tr> <td>"+ deviceList[num].lastSeen +"</td> <td>"+ deviceList[num].interfaces[0].gateway +"</td> <td>" + deviceList[num].interfaces[0].macAddress +"</td></tr> <tr> <td> Last Update </td> <td> Gateway </td> <td> Mac Address </td> </tr></table><hr/><div id='devices'></div><p></p>";
@@ -103,7 +144,6 @@ function showDeviceInfo(num) {
 
 //this appends a single device's information to the document
 function displayList(data){
-
   for (var i in data){ //for each (i : data[i]) in data
     formattedData = "";
     if (i == "name" || i == "description" || i == "ipAddress" || i == "alarms" || i == "deviceNum" || i == "deviceType" || i == "lastSeen" || i == "uptime" || i == "interfaces" || i == "document" || i == "dhcpClients") continue;
@@ -135,6 +175,15 @@ function showSummary(){
   $("#summary").show();
   $("#problems").hide();
   $("#history").hide();
+  $("#mynetwork").hide();
+}
+
+function showVisualization(){
+  $("#device").hide();
+  $("#summary").hide();
+  $("#problems").hide();
+  $("#history").hide();
+  $("#mynetwork").show();
 }
 
 function showProblems(){
@@ -158,6 +207,7 @@ function showProblems(){
   $("#device").hide();
   $("#summary").hide();
   $("#problems").show();
+  $("#mynetwork").hide();
 
   var problemsInfo = "<div id='pageTitle'><h1> Problems </h1></div>";
 
@@ -226,6 +276,7 @@ function showHistory(data){
   $("#summary").hide();
   $("#problems").hide();
   $("#history").show();
+  $("#mynetwork").hide();
 
   totalReceived = [];
   totalSent = [];
