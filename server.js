@@ -6,6 +6,7 @@ var _ = require('underscore');
 
 const ROOT = "./public_html";
 var deviceList = [];
+var deviceHistory = [];
 var deviceNum = 0;
 
 var server = http.createServer(handleRequest);
@@ -23,9 +24,14 @@ function handleRequest(req, res) {
 	//the callback sequence for static serving...
 	if (urlObj.pathname === '/reset/') {
 		deviceNum = 0;
-
+		deviceHistory.push(deviceList);
+		if (deviceHistory.length > 10){
+			deviceHistory.shift();
+		}
 		respond(200, "");
-	} else if (urlObj.pathname === '/createList/'){
+	} else if (urlObj.pathname === '/history/') {
+		//give him the hist
+	}else if (urlObj.pathname === '/createList/'){
 		var queryData = url.parse(req.url, true).query;
 
 		var postBody = "";
