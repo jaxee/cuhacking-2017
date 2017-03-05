@@ -21,19 +21,11 @@ function handleRequest(req, res) {
 	var filename = ROOT+urlObj.pathname;
 
 	//the callback sequence for static serving...
-	if (urlObj.pathname ==='/getType/') {
-		var queryData = url.parse(req.url, true).query;
-		var postBody = "";
-    req.setEncoding('utf8');
-    req.on('data', function(chunk){
-    	postBody+=chunk;
-    });
-    req.on('end', function(){
-    	var userData = JSON.parse(postBody);
-    	var data = findDeviceType(userData);
-			respond(200, JSON.stringify(data));
-    });
-	} else if (urlObj.pathname === '/createList/'){
+	if (urlObj.pathname === '/reset/') {
+		deviceNum = 0;
+
+		respond(200, "");
+	} else if (urlObj.pathname === '/createList/'){		
 		var queryData = url.parse(req.url, true).query;
 
 		var postBody = "";
@@ -61,13 +53,14 @@ function handleRequest(req, res) {
 			}
 
 			newDevice.deviceType = findDeviceType(data);
+			newDevice.deviceNum = deviceNum;
 
 			deviceList[deviceNum] = newDevice; //we add this new device to the server's list
 			deviceNum++;
 
 			respond(200, JSON.stringify(newDevice)); //we return a single device that was newly created
-    });
-	}else {
+    	});
+	} else {
 		fs.stat(filename,function(err, stats){
 			if(err){   //try and open the file and handle the error, handle the error
 				respondErr(err);

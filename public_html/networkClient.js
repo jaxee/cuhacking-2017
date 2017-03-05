@@ -2,6 +2,13 @@ const API = "http://cuhackathon-challenge.martellotech.com";
 var deviceList = []; //this will hold all 14 (or so) objects
 
 $(document).ready(function(){ //this function runs once the page loads!
+  $.ajax({ //send off a request for a new game, telling the server our answer to the current one
+      method:"POST",
+      url:"/reset/",
+      data: "",
+      dataType:'json'
+  });
+
   requestDevices();
 });
 
@@ -45,5 +52,13 @@ function add(data){
 
   $(".deviceNumber").html(deviceList.length);
 
-  $("#allDevices").append("<li><div id='deviceIcon'><img width='50%' src='./Images/"+data.deviceType+".png'/></div><div id='deviceInfo'><h4><b>" + data.name + "</b></h4><p>" + data.description +"</p<</div></li>");
+  if ((data.deviceNum % 4) == 0) {
+    $("#allDevices").append("<tr></tr>");
+  }
+
+  var cell = "<td><img width='50%' src='./Images/" + data.deviceType +".png' /><div id='deviceInfo'><h4><b>" + data.name + "</b></h4> <p>" + data.description +"</p></div></td>";
+  console.log(data.deviceNum);
+  $("#allDevices tr:eq("+ parseInt(data.deviceNum/4) +")").append(cell);
+
+  //$("#allDevices").append("<li><div id='deviceIcon'><img width='50%' src='./Images/"+data.deviceType+".png'/></div><div id='deviceInfo'><h4><b>" + data.name + "</b></h4><p>" + data.description +"</p<</div></li>");
 }
