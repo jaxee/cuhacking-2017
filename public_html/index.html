@@ -5,6 +5,8 @@
 		<title>CU Hacking 2017</title>
 		<link rel="stylesheet" href="main.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.1/vis.min.js"> </script>
+		<link src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.1/vis.min.css"> </link>
 
 		<script src="./networkClient.js"></script>
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -27,7 +29,7 @@
 	</head>
 	<body>
 		<div id="mySidenav" class="sidenav">
-		  <img style="margin-top:-20px; padding-top:0px; padding-bottom:40px; padding-right:20px" width="60%" src="Images/logo.png" />
+		  <a href="#" onClick="showVisualization()"><img style="margin-top:-20px; padding-top:0px; padding-bottom:40px; padding-left:10px;" width="70%" src="Images/logo.png" /></a>
 
 		  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
@@ -42,6 +44,10 @@
 		<span style="font-size:30px;cursor:pointer;opacity:0.5;" class="openMenuTab" onclick="openNav()"><img class="menuOpenTabImg" height="200px;" src="Images/menuOpenTab.png" /></span>
 
 		<div id="content">
+
+
+			<div id="mynetwork" style="margin-top:20%"></div>
+			
 
 			<div id="summary">
 				<div id="pageTitle">
